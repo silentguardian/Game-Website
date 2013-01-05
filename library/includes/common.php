@@ -201,10 +201,9 @@ function template_menu()
 		'home' => 'Home',
 		'login' => 'Login',
 		'register' => 'Register',
-		'logout' => 'Logout',
 		'about' => 'About',
-		'',
 		'profile' => 'Profile',
+		'logout' => 'Logout',
 	);
 
 	echo '

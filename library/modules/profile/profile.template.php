@@ -22,6 +22,12 @@ function template_profile_main()
 			<fieldset>
 				<legend>Edit Profile</legend>
 				<div class="control-group">
+					<label class="control-label" for="email_address">Email address:</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="email_address" name="email_address" value="', $template['email_address'], '" />
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label" for="choose_password">Choose password:</label>
 					<div class="controls">
 						<input type="password" class="input-xlarge" id="choose_password" name="choose_password" />

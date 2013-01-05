@@ -22,7 +22,7 @@ function template_about_main()
 			<h2>About</h2>
 		</div>
 		<p class="content">
-			Game Website is the base that\'ll be hosting a game project.
+			Game Website is the base that will be hosting a game project.
 		</p>
 		<p class="content">
 			This tool is coded in <a href="http://php.net">PHP</a> and uses <a href="http://twitter.github.com/bootstrap">Bootstrap</a> CSS framework.

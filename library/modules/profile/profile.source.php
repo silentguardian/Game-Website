@@ -17,10 +17,19 @@ function profile_main()
 {
 	global $core, $template, $user;
 
+	$request = db_query("
+		SELECT email_address
+		FROM user
+		WHERE id_user = $user[id]
+		LIMIT 1");
+	list ($template['email_address']) = db_fetch_row($request);
+	db_free_result($request);
+
 	if (!empty($_POST['save']))
 	{
 		$values = array();
 		$fields = array(
+			'email_address' => 'email',
 			'choose_password' => 'password',
 			'verify_password' => 'password',
 			'current_password' => 'password',
@@ -30,10 +39,9 @@ function profile_main()
 		{
 			if ($type === 'password')
 				$values[$field] = !empty($_POST[$field]) ? sha1($_POST[$field]) : '';
+			elseif ($type === 'email')
+				$values[$field] = !empty($_POST[$field]) && preg_match('~^[0-9A-Za-z=_+\-/][0-9A-Za-z=_\'+\-/\.]*@[\w\-]+(\.[\w\-]+)*(\.[\w]{2,6})$~', $_POST[$field]) ? $_POST[$field] : '';
 		}
-
-		if ($values['choose_password'] === '')
-			redirect(build_url());
 
 		$request = db_query("
 			SELECT password
@@ -49,13 +57,28 @@ function profile_main()
 		if ($values['choose_password'] !== $values['verify_password'])
 			fatal_error('The new passwords entered do not match.');
 
-		db_query("
-			UPDATE user
-			SET password = '$values[verify_password]'
-			WHERE id_user = $user[id]
-			LIMIT 1");
+		if ($values['email_address'] === '')
+			fatal_error('You did not enter a valid email address!');
 
-		redirect(build_url('login'));
+		$changes = array();
+		if ($values['email_address'] !== $template['email_address'])
+			$changes[] = "email_address = '$values[email_address]'";
+		if ($values['choose_password'] !== '')
+			$changes[] = "password = '$values[verify_password]'";
+
+		if (!empty($changes))
+		{
+			db_query("
+				UPDATE user
+				SET " . implode(', ', $changes) . "
+				WHERE id_user = $user[id]
+				LIMIT 1");
+		}
+
+		if ($values['choose_password'] !== '')
+			redirect(build_url('login'));
+		else
+			redirect(build_url('profile'));
 	}
 
 	$template['page_title'] = 'Edit Profile';

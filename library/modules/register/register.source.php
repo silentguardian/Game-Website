@@ -38,13 +38,13 @@ function register_main()
 		}
 
 		if ($values['username'] === '')
-			fatal_error('You did no enter a valid username!');
+			fatal_error('You did not enter a valid username!');
 
 		if ($values['email_address'] === '')
-			fatal_error('You did no enter a valid email address!');
+			fatal_error('You did not enter a valid email address!');
 
 		if ($values['password'] === '')
-			fatal_error('You did no enter a valid password!');
+			fatal_error('You did not enter a valid password!');
 
 		if ($values['password'] !== $values['verify_password'])
 			fatal_error('The passwords entered do not match!');
