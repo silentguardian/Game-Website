@@ -199,6 +199,7 @@ function template_menu()
 	$items = array(
 		'',
 		'home' => 'Home',
+		'list' => 'Games',
 		'login' => 'Login',
 		'register' => 'Register',
 		'about' => 'About',
