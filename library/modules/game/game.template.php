@@ -81,7 +81,7 @@ function template_game_view()
 			</div>
 			<h2>View Game - ', $template['game']['name'], '</h2>
 		</div>
-		<dl class="dl-horizontal">
+		<dl class="dl-horizontal well">
 			<dt>Name:</dt>
 			<dd>', $template['game']['name'], '</dd>
 			<dt>Description:</dt>
@@ -94,9 +94,50 @@ function template_game_view()
 			<dd>', $template['game']['played'], '</dd>
 			<dt>Rating:</dt>
 			<dd>', $template['game']['rating'], '</dd>
-			<dt>Comments:</dt>
-			<dd>', $template['game']['comments'], '</dd>
-		</dl>';
+		</dl>
+		<div class="page-header">
+			<h3>Comments</h3>
+		</div>';
+
+	if (empty($template['game']['comments']))
+	{
+		echo '
+		<div class="well">
+			There are not any comments for this game yet. Be the first one to comment!
+		</div>';
+	}
+	else
+	{
+		foreach ($template['game']['comments'] as $comment)
+		{
+		echo '
+		<div class="well">
+			', $comment['body'], '
+			<hr />
+			<div class="pull-right">
+				<a class="btn btn-danger" href="', build_url(array('game', 'comment', $template['game']['id'], $comment['id'])), '">Delete</a>
+			</div>
+			<div class="muted">
+				Comment by ', $comment['user']['name'], ' on ', $comment['created'], '
+			</div>
+		</div>';
+		}
+	}
+
+	echo '
+		<form class="form-horizontal" action="', build_url(array('game', 'comment', $template['game']['id'])), '" method="post">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label" for="comment">Comment:</label>
+					<div class="controls">
+						<textarea class="input-xlarge span5" id="comment" name="comment" rows="3"></textarea>
+					</div>
+				</div>
+				<div class="form-actions">
+					<input type="submit" class="btn btn-primary" name="submit" value="Submit" />
+				</div>
+			</fieldset>
+		</form>';
 }
 
 function template_game_edit()

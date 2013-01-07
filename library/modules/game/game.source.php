@@ -17,7 +17,7 @@ function game_main()
 {
 	global $core;
 
-	$actions = array('list', 'view', 'edit', 'delete');
+	$actions = array('list', 'view', 'edit', 'comment', 'delete');
 
 	$core['current_action'] = 'list';
 	if (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], $actions))
@@ -87,6 +87,32 @@ function game_view()
 
 	if (empty($template['game']))
 		fatal_error('The game requested does not exist!');
+
+	if (!empty($template['game']['comments']))
+	{
+		$request = db_query("
+			SELECT
+				c.id_comment, c.id_user, c.body,
+				c.created, u.username
+			FROM comment AS c
+				INNER JOIN user AS u ON (u.id_user = c.id_user)
+			WHERE c.id_game = $id_game
+			ORDER BY c.id_comment DESC");
+		$template['game']['comments'] = array();
+		while ($row = db_fetch_assoc($request))
+		{
+			$template['game']['comments'][$row['id_comment']] = array(
+				'id' => $row['id_comment'],
+				'user' => array(
+					'id' => $row['id_user'],
+					'name' => $row['username'],
+				),
+				'body' => $row['body'],
+				'created' => strftime('%d %B %Y, %H:%M', $row['created']),
+			);
+		}
+		db_free_result($request);
+	}
 
 	$template['page_title'] = 'View Game - ' . $template['game']['name'];
 	$core['current_template'] = 'game_view';
@@ -186,6 +212,70 @@ function game_edit()
 	$core['current_template'] = 'game_edit';
 }
 
+function game_comment()
+{
+	global $user;
+
+	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
+	$id_comment = !empty($_GET['comment']) ? (int) $_GET['comment'] : 0;
+	$comment = !empty($_POST['comment']) ? htmlspecialchars($_POST['comment'], ENT_QUOTES) : '';
+
+	$request = db_query("
+		SELECT id_game
+		FROM game
+		WHERE id_game = $id_game
+		LIMIT 1");
+	list ($id_game) = db_fetch_row($request);
+	db_free_result($request);
+
+	if (empty($id_game))
+		fatal_error('The game requested does not exist!');
+
+	if (!empty($comment) && empty($_POST['submit']))
+		fatal_error('You did not submit the form!');
+	elseif (!empty($comment))
+	{
+		db_query("
+			INSERT INTO comment
+				(id_game, id_user, body, created)
+			VALUES
+				($id_game, $user[id], '$comment', " . time() . ")");
+
+		db_query("
+			UPDATE game
+			SET comments = comments + 1
+			WHERE id_game = $id_game
+			LIMIT 1");
+	}
+
+	if (!empty($id_comment))
+	{
+		$request = db_query("
+			SELECT id_comment
+			FROM comment
+			WHERE id_comment = $id_comment
+			LIMIT 1");
+		list ($id_comment) = db_fetch_row($request);
+		db_free_result($request);
+
+		if (empty($id_comment))
+			fatal_error('The comment requested does not exist!');
+
+		db_query("
+			DELETE FROM comment
+			WHERE id_comment = $id_comment
+			LIMIT 1");
+
+		db_query("
+			UPDATE game
+			SET comments = comments - 1
+			WHERE id_game = $id_game
+			LIMIT 1");
+	}
+
+	redirect(build_url(array('game', 'view', $id_game)));
+}
+
 function game_delete()
 {
 	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
@@ -198,27 +288,25 @@ function game_delete()
 	list ($id_game) = db_fetch_row($request);
 	db_free_result($request);
 
-	if (!empty($id_game))
-	{
-		db_query("
-			DELETE FROM game
-			WHERE id_game = $id_game
-			LIMIT 1");
-
-		db_query("
-			DELETE FROM comment
-			WHERE id_game = $id_game");
-
-		db_query("
-			DELETE FROM play
-			WHERE id_game = $id_game");
-
-		db_query("
-			DELETE FROM rating
-			WHERE id_game = $id_game");
-
-		redirect(build_url('game'));
-	}
-	else
+	if (empty($id_game))
 		fatal_error('The game requested does not exist!');
+
+	db_query("
+		DELETE FROM game
+		WHERE id_game = $id_game
+		LIMIT 1");
+
+	db_query("
+		DELETE FROM comment
+		WHERE id_game = $id_game");
+
+	db_query("
+		DELETE FROM play
+		WHERE id_game = $id_game");
+
+	db_query("
+		DELETE FROM rating
+		WHERE id_game = $id_game");
+
+	redirect(build_url('game'));
 }

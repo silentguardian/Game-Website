@@ -176,6 +176,8 @@ function build_url($parts = array(), $quick = true)
 					$url .= '&amp;action=' . $part;
 				elseif ($level == 2)
 					$url .= '&amp;' . $parts[0] . '=' . $part;
+				elseif ($level == 3)
+					$url .= '&amp;' . $parts[1] . '=' . $part;
 			}
 		}
 		else
@@ -297,7 +299,7 @@ function template_footer()
 
 function redirect($location)
 {
-	header('Location: ' . str_replace(' ', '%20', $location));
+	header('Location: ' . str_replace(array(' ', '&amp;'), array('%20', '&'), $location));
 
 	ob_end_flush();
 
