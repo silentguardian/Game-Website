@@ -29,7 +29,6 @@ function template_game_list()
 				<tr>
 					<th>Name</th>
 					<th class="align_center">Played</th>
-					<th class="align_center">Rating</th>
 					<th class="align_center">Creator</th>
 					<th class="align_center">Created</th>
 					<th class="align_center">Actions</th>
@@ -41,7 +40,7 @@ function template_game_list()
 	{
 		echo '
 				<tr>
-					<td class="align_center" colspan="7">There are not any games added yet!</td>
+					<td class="align_center" colspan="6">There are not any games added yet!</td>
 				</tr>';
 	}
 
@@ -51,7 +50,6 @@ function template_game_list()
 				<tr>
 					<td>', $game['name'], '</td>
 					<td class="span2 align_center">', $game['played'], '</td>
-					<td class="span2 align_center">', $game['rating'], '</td>
 					<td class="span2 align_center">', $game['creator'], '</td>
 					<td class="span2 align_center">', $game['created'], '</td>
 					<td class="span2 align_center">
@@ -66,6 +64,70 @@ function template_game_list()
 		</table>';
 }
 
+function template_game_customize()
+{
+	global $core, $template;
+
+	echo '
+		<div class="page-header">
+			<div class="pull-right">
+				<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
+			</div>
+			<h2>Customize Game - ', $template['game']['name'], '</h2>
+		</div>
+		<ul class="thumbnails">';
+
+	for ($level = 1; $level < 6; $level++)
+	{
+		echo '
+			<li class="span4">
+				<div class="thumbnail">
+					<img src="', $core['site_url'], 'interface/img/level.png" alt="">
+					<div class="detail">
+						<a class="btn btn-warning" href="', build_url(array('game', 'customize', $template['game']['id'], $level)), '">Customize Level</a>
+						<h3>Level ', $level, '</h3>
+					</p>
+				</div>
+			</li>';
+	}
+
+	echo '
+		</ul>';
+}
+
+function template_game_customize_level()
+{
+	global $template;
+
+	echo '
+		<form class="form-horizontal" action="', build_url(array('game', 'customize', $template['game']['id'], $template['game']['level'])), '" method="post">
+			<fieldset>
+				<div class="pull-right">
+					<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
+					<a class="btn" href="', build_url(array('game', 'customize', $template['game']['id'])), '">Back to Levels</a>
+				</div>
+				<legend>Customize Game - ', $template['game']['name'], ' - Level ', $template['game']['level'], '</legend>';
+
+	for ($item = 1; $item < 11; $item++)
+	{
+		echo '
+				<div class="control-group">
+					<label class="control-label" for="code_', $item, '">Level code ', $item, ':</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="code_', $item, '" name="code[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item] . '"' : '' , ' />
+					</div>
+				</div>';
+	}
+
+	echo '
+				<div class="form-actions">
+					<input type="submit" class="btn btn-primary" name="save" value="Save changes" />
+					<input type="submit" class="btn" name="cancel" value="Cancel" />
+				</div>
+			</fieldset>
+		</form>';
+}
+
 function template_game_view()
 {
 	global $template;
@@ -75,7 +137,7 @@ function template_game_view()
 			<div class="pull-right">
 				<a class="btn" href="', build_url('game'), '">Back to List</a>
 				<a class="btn btn-success" href="', build_url(array('game', 'play', $template['game']['id'])), '">Play</a>
-				<a class="btn btn-primary" href="', build_url(array('game', 'modify', $template['game']['id'])), '">Modify</a>
+				<a class="btn btn-warning" href="', build_url(array('game', 'customize', $template['game']['id'])), '">Customize</a>
 				<a class="btn btn-primary" href="', build_url(array('game', 'edit', $template['game']['id'])), '">Edit</a>
 				<a class="btn btn-danger" href="', build_url(array('game', 'delete', $template['game']['id'])), '">Delete</a>
 			</div>
@@ -92,8 +154,6 @@ function template_game_view()
 			<dd>', $template['game']['created'], '</dd>
 			<dt>Played:</dt>
 			<dd>', $template['game']['played'], '</dd>
-			<dt>Rating:</dt>
-			<dd>', $template['game']['rating'], '</dd>
 		</dl>
 		<div class="page-header">
 			<h3>Comments</h3>

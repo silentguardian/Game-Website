@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2013 at 05:12 PM
+-- Generation Time: Jan 08, 2013 at 01:24 PM
 -- Server version: 5.5.16
 -- PHP Version: 5.3.8
 
@@ -33,7 +33,22 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `body` text COLLATE utf8_unicode_ci NOT NULL,
   `created` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_comment`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customize`
+--
+
+CREATE TABLE IF NOT EXISTS `customize` (
+  `id_customize` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `id_game` mediumint(8) NOT NULL DEFAULT '0',
+  `id_level` tinyint(4) NOT NULL DEFAULT '0',
+  `id_item` tinyint(4) NOT NULL DEFAULT '0',
+  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id_customize`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -49,7 +64,6 @@ CREATE TABLE IF NOT EXISTS `game` (
   `created` int(10) NOT NULL DEFAULT '0',
   `played` int(10) NOT NULL DEFAULT '0',
   `comments` mediumint(8) NOT NULL DEFAULT '0',
-  `rating` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_game`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -66,21 +80,6 @@ CREATE TABLE IF NOT EXISTS `play` (
   `time` int(10) NOT NULL DEFAULT '0',
   `score` smallint(5) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_play`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `rating`
---
-
-CREATE TABLE IF NOT EXISTS `rating` (
-  `id_rating` int(10) NOT NULL AUTO_INCREMENT,
-  `id_game` mediumint(8) NOT NULL DEFAULT '0',
-  `id_user` mediumint(8) NOT NULL DEFAULT '0',
-  `value` tinyint(4) NOT NULL DEFAULT '0',
-  `created` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_rating`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
