@@ -17,7 +17,7 @@ function game_main()
 {
 	global $core;
 
-	$actions = array('list', 'view', 'edit', 'customize', 'comment', 'delete');
+	$actions = array('list', 'view', 'play', 'edit', 'customize', 'comment', 'delete', 'api');
 
 	$core['current_action'] = 'list';
 	if (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], $actions))
@@ -116,75 +116,42 @@ function game_view()
 	$core['current_template'] = 'game_view';
 }
 
-function game_customize()
+function game_play()
 {
 	global $core, $template;
 
 	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
-	$id_level = !empty($_REQUEST['customize']) ? (int) $_REQUEST['customize'] : 0;
 
 	$request = db_query("
 		SELECT id_game, name
 		FROM game
 		WHERE id_game = $id_game
 		LIMIT 1");
-	list ($id_game, $name) = db_fetch_row($request);
+	$template['game'] = array();
+	while ($row = db_fetch_assoc($request))
+	{
+		$template['game'] = array(
+			'id' => $row['id_game'],
+			'name' => $row['name'],
+		);
+	}
 	db_free_result($request);
 
-	if (empty($id_game))
+	if (empty($template['game']))
 		fatal_error('The game requested does not exist!');
 
-	if (!empty($id_level) && $id_level > 0 && $id_level < 6)
+	if (empty($_SESSION['last_played_game']) || $_SESSION['last_played_game'] != $template['game']['id'])
 	{
-		if (!empty($_POST['save']) && !empty($_POST['code']) && is_array($_POST['code']))
-		{
-			$inserts = array();
-			for ($item = 1; $item < 11; $item++)
-			{
-				$value = !empty($_POST['code'][$item]) ? htmlspecialchars($_POST['code'][$item], ENT_QUOTES) : '';
-				if ($value !== '')
-					$inserts[] = "($id_game, $id_level, $item, '$value')";
-			}
+		db_query("
+			UPDATE game
+			SET played = played + 1
+			WHERE id_game = $id_game");
 
-			db_query("
-				DELETE FROM customize
-				WHERE id_game = $id_game
-					AND id_level = $id_level");
-
-			db_query("
-				INSERT INTO customize
-					(id_game, id_level, id_item, value)
-				VALUES
-					" . implode(",
-					", $inserts));
-		}
-
-		if (!empty($_POST['save']) || !empty($_POST['cancel']))
-			redirect(build_url(array('game', 'customize', $id_game)));
-
-		$request = db_query("
-			SELECT id_item, value
-			FROM customize
-			WHERE id_game = $id_game
-				AND id_level = $id_level");
-		while ($row = db_fetch_assoc($request))
-			$template['items'][$row['id_item']] = $row['value'];
-		db_free_result($request);
-
-		$template['page_title'] = 'Customize Game - ' . $name . ' - Level ' . $id_level;
-		$core['current_template'] = 'game_customize_level';
-	}
-	else
-	{
-		$template['page_title'] = 'Customize Game - ' . $name;
-		$core['current_template'] = 'game_customize';
+		$_SESSION['last_played_game'] = $template['game']['id'];
 	}
 
-	$template['game'] = array(
-		'id' => $id_game,
-		'name' => $name,
-		'level' => $id_level,
-	);
+	$template['page_title'] = 'Play Game - ' . $template['game']['name'];
+	$core['current_template'] = 'game_play';
 }
 
 function game_edit()
@@ -279,6 +246,77 @@ function game_edit()
 
 	$template['page_title'] = (!$is_new ? 'Edit' : 'Add') . ' Game';
 	$core['current_template'] = 'game_edit';
+}
+
+function game_customize()
+{
+	global $core, $template;
+
+	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
+	$id_level = !empty($_REQUEST['customize']) ? (int) $_REQUEST['customize'] : 0;
+
+	$request = db_query("
+		SELECT id_game, name
+		FROM game
+		WHERE id_game = $id_game
+		LIMIT 1");
+	list ($id_game, $name) = db_fetch_row($request);
+	db_free_result($request);
+
+	if (empty($id_game))
+		fatal_error('The game requested does not exist!');
+
+	if (!empty($id_level) && $id_level > 0 && $id_level < 6)
+	{
+		if (!empty($_POST['save']) && !empty($_POST['code']) && is_array($_POST['code']))
+		{
+			$inserts = array();
+			for ($item = 1; $item < 11; $item++)
+			{
+				$value = !empty($_POST['code'][$item]) ? htmlspecialchars($_POST['code'][$item], ENT_QUOTES) : '';
+				if ($value !== '')
+					$inserts[] = "($id_game, $id_level, $item, '$value')";
+			}
+
+			db_query("
+				DELETE FROM customize
+				WHERE id_game = $id_game
+					AND id_level = $id_level");
+
+			db_query("
+				INSERT INTO customize
+					(id_game, id_level, id_item, value)
+				VALUES
+					" . implode(",
+					", $inserts));
+		}
+
+		if (!empty($_POST['save']) || !empty($_POST['cancel']))
+			redirect(build_url(array('game', 'customize', $id_game)));
+
+		$request = db_query("
+			SELECT id_item, value
+			FROM customize
+			WHERE id_game = $id_game
+				AND id_level = $id_level");
+		while ($row = db_fetch_assoc($request))
+			$template['items'][$row['id_item']] = $row['value'];
+		db_free_result($request);
+
+		$template['page_title'] = 'Customize Game - ' . $name . ' - Level ' . $id_level;
+		$core['current_template'] = 'game_customize_level';
+	}
+	else
+	{
+		$template['page_title'] = 'Customize Game - ' . $name;
+		$core['current_template'] = 'game_customize';
+	}
+
+	$template['game'] = array(
+		'id' => $id_game,
+		'name' => $name,
+		'level' => $id_level,
+	);
 }
 
 function game_comment()
@@ -378,4 +416,37 @@ function game_delete()
 		WHERE id_game = $id_game");
 
 	redirect(build_url('game'));
+}
+
+function game_api()
+{
+	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
+
+	$request = db_query("
+		SELECT id_game
+		FROM game
+		WHERE id_game = $id_game
+		LIMIT 1");
+	list ($id_game) = db_fetch_row($request);
+	db_free_result($request);
+
+	if (empty($id_game))
+		exit('no_game');
+
+	$request = db_query("
+		SELECT id_level, id_item, value
+		FROM customize
+		WHERE id_game = $id_game");
+	$items = array();
+	while ($row = db_fetch_assoc($request))
+		$items[$row['id_level']][$row['id_item']] = $row['value'];
+	db_free_result($request);
+
+	for ($level = 1; $level < 6; $level++)
+	{
+		for ($item = 1; $item < 11; $item++)
+			echo $level . '.' . $item . '=' . (isset($items[$level][$item]) ? $items[$level][$item] : '') . "\n";
+	}
+
+	exit();
 }

@@ -64,70 +64,6 @@ function template_game_list()
 		</table>';
 }
 
-function template_game_customize()
-{
-	global $core, $template;
-
-	echo '
-		<div class="page-header">
-			<div class="pull-right">
-				<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
-			</div>
-			<h2>Customize Game - ', $template['game']['name'], '</h2>
-		</div>
-		<ul class="thumbnails">';
-
-	for ($level = 1; $level < 6; $level++)
-	{
-		echo '
-			<li class="span4">
-				<div class="thumbnail">
-					<img src="', $core['site_url'], 'interface/img/level.png" alt="">
-					<div class="detail">
-						<a class="btn btn-warning" href="', build_url(array('game', 'customize', $template['game']['id'], $level)), '">Customize Level</a>
-						<h3>Level ', $level, '</h3>
-					</p>
-				</div>
-			</li>';
-	}
-
-	echo '
-		</ul>';
-}
-
-function template_game_customize_level()
-{
-	global $template;
-
-	echo '
-		<form class="form-horizontal" action="', build_url(array('game', 'customize', $template['game']['id'], $template['game']['level'])), '" method="post">
-			<fieldset>
-				<div class="pull-right">
-					<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
-					<a class="btn" href="', build_url(array('game', 'customize', $template['game']['id'])), '">Back to Levels</a>
-				</div>
-				<legend>Customize Game - ', $template['game']['name'], ' - Level ', $template['game']['level'], '</legend>';
-
-	for ($item = 1; $item < 11; $item++)
-	{
-		echo '
-				<div class="control-group">
-					<label class="control-label" for="code_', $item, '">Level code ', $item, ':</label>
-					<div class="controls">
-						<input type="text" class="input-xlarge" id="code_', $item, '" name="code[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item] . '"' : '' , ' />
-					</div>
-				</div>';
-	}
-
-	echo '
-				<div class="form-actions">
-					<input type="submit" class="btn btn-primary" name="save" value="Save changes" />
-					<input type="submit" class="btn" name="cancel" value="Cancel" />
-				</div>
-			</fieldset>
-		</form>';
-}
-
 function template_game_view()
 {
 	global $template;
@@ -200,6 +136,22 @@ function template_game_view()
 		</form>';
 }
 
+function template_game_play()
+{
+	global $core, $template;
+
+	echo '
+		<div class="page-header">
+			<div class="pull-right">
+				<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
+			</div>
+			<h2>Play Game - ', $template['game']['name'], '</h2>
+		</div>
+		<div class="align_center">
+			<embed src="', $core['site_url'], 'media/movie.swf" flashvars="game_id=', $template['game']['id'], '" width="800" height="600"></embed>
+		</div>';
+}
+
 function template_game_edit()
 {
 	global $template;
@@ -226,5 +178,69 @@ function template_game_edit()
 				</div>
 			</fieldset>
 			<input type="hidden" name="game" value="', $template['game']['id'], '" />
+		</form>';
+}
+
+function template_game_customize()
+{
+	global $core, $template;
+
+	echo '
+		<div class="page-header">
+			<div class="pull-right">
+				<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
+			</div>
+			<h2>Customize Game - ', $template['game']['name'], '</h2>
+		</div>
+		<ul class="thumbnails">';
+
+	for ($level = 1; $level < 6; $level++)
+	{
+		echo '
+			<li class="span4">
+				<div class="thumbnail">
+					<img src="', $core['site_url'], 'interface/img/level.png" alt="">
+					<div class="detail">
+						<a class="btn btn-warning" href="', build_url(array('game', 'customize', $template['game']['id'], $level)), '">Customize Level</a>
+						<h3>Level ', $level, '</h3>
+					</p>
+				</div>
+			</li>';
+	}
+
+	echo '
+		</ul>';
+}
+
+function template_game_customize_level()
+{
+	global $template;
+
+	echo '
+		<form class="form-horizontal" action="', build_url(array('game', 'customize', $template['game']['id'], $template['game']['level'])), '" method="post">
+			<fieldset>
+				<div class="pull-right">
+					<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
+					<a class="btn" href="', build_url(array('game', 'customize', $template['game']['id'])), '">Back to Levels</a>
+				</div>
+				<legend>Customize Game - ', $template['game']['name'], ' - Level ', $template['game']['level'], '</legend>';
+
+	for ($item = 1; $item < 11; $item++)
+	{
+		echo '
+				<div class="control-group">
+					<label class="control-label" for="code_', $item, '">Level code ', $item, ':</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="code_', $item, '" name="code[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item] . '"' : '' , ' />
+					</div>
+				</div>';
+	}
+
+	echo '
+				<div class="form-actions">
+					<input type="submit" class="btn btn-primary" name="save" value="Save changes" />
+					<input type="submit" class="btn" name="cancel" value="Cancel" />
+				</div>
+			</fieldset>
 		</form>';
 }
