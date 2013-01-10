@@ -32,7 +32,7 @@ function template_home_main()
 				<thead>
 					<tr>
 						<th>Game</th>
-						<th>Played</th>
+						<th class="span2">Played</th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -49,7 +49,7 @@ function template_home_main()
 	{
 		echo '
 					<tr>
-						<td>', $game['link'], '</td>
+						<td><a href="', $game['href'], '">', $game['name'], '</a></td>
 						<td>', $game['played'], '</td>
 					</tr>';
 	}
@@ -68,7 +68,7 @@ function template_home_main()
 				<thead>
 					<tr>
 						<th>Game</th>
-						<th>Created</th>
+						<th class="span3">Created</th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -85,7 +85,7 @@ function template_home_main()
 	{
 		echo '
 					<tr>
-						<td>', $game['link'], '</td>
+						<td><a href="', $game['href'], '">', $game['name'], '</a></td>
 						<td>', $game['created'], '</td>
 					</tr>';
 	}
@@ -105,7 +105,7 @@ function template_home_main()
 				<thead>
 					<tr>
 						<th>Player</th>
-						<th>Score</th>
+						<th class="span2">Score</th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -122,7 +122,7 @@ function template_home_main()
 	{
 		echo '
 					<tr>
-						<td>', $player['name'], '</td>
+						<td>', $player['username'], '</td>
 						<td>', $player['score'], '</td>
 					</tr>';
 	}
@@ -141,7 +141,7 @@ function template_home_main()
 				<thead>
 					<tr>
 						<th>Player</th>
-						<th>Registered</th>
+						<th class="span3">Registered</th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -158,7 +158,7 @@ function template_home_main()
 	{
 		echo '
 					<tr>
-						<td>', $player['name'], '</td>
+						<td>', $player['username'], '</td>
 						<td>', $player['registered'], '</td>
 					</tr>';
 	}

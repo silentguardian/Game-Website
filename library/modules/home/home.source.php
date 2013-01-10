@@ -17,14 +17,89 @@ function home_main()
 {
 	global $core, $template;
 
+	$request = db_query("
+		SELECT id_game, name, played
+		FROM game
+		ORDER BY played DESC
+		LIMIT 5");
 	$template['popular_games'] = array();
-	$template['recent_games'] = array();
-	$template['top_players'] = array();
-	$template['latest_players'] = array();
+	while ($row = db_fetch_assoc($request))
+	{
+		$template['popular_games'][] = array(
+			'name' => $row['name'],
+			'href' => build_url(array('game', 'view', $row['id_game'])),
+			'played' => $row['played'],
+		);
+	}
+	db_free_result($request);
 
-	$template['total_user'] = 0;
-	$template['total_game'] = 0;
-	$template['total_play'] = 0;
+	$request = db_query("
+		SELECT id_game, name, created
+		FROM game
+		ORDER BY id_game DESC
+		LIMIT 5");
+	$template['recent_games'] = array();
+	while ($row = db_fetch_assoc($request))
+	{
+		$template['recent_games'][] = array(
+			'name' => $row['name'],
+			'href' => build_url(array('game', 'view', $row['id_game'])),
+			'created' => strftime('%d %B %Y', $row['created']),
+		);
+	}
+	db_free_result($request);
+
+	$request = db_query("
+		SELECT u.username, s.value
+		FROM score AS s
+			INNER JOIN user AS u ON (u.id_user = s.id_user)
+		ORDER BY value DESC
+		LIMIT 5");
+	$template['top_players'] = array();
+	while ($row = db_fetch_assoc($request))
+	{
+		$template['top_players'][] = array(
+			'username' => $row['username'],
+			'score' => $row['value'],
+		);
+	}
+	db_free_result($request);
+
+	$request = db_query("
+		SELECT username, registered
+		FROM user
+		ORDER BY id_user DESC
+		LIMIT 5");
+	$template['latest_players'] = array();
+	while ($row = db_fetch_assoc($request))
+	{
+		$template['latest_players'][] = array(
+			'username' => $row['username'],
+			'registered' => strftime('%d %B %Y', $row['registered']),
+		);
+	}
+	db_free_result($request);
+
+	$request = db_query("
+		SELECT COUNT(id_user)
+		FROM user
+		LIMIT 1");
+	list ($template['total_user']) = db_fetch_row($request);
+	db_free_result($request);
+
+	$request = db_query("
+		SELECT COUNT(id_game)
+		FROM game
+		LIMIT 1");
+	list ($template['total_game']) = db_fetch_row($request);
+	db_free_result($request);
+
+	$request = db_query("
+		SELECT SUM(played)
+		FROM game
+		LIMIT 1");
+	list ($template['total_play']) = db_fetch_row($request);
+	db_free_result($request);
 
 	$template['page_title'] = 'Home';
 	$core['current_template'] = 'home_main';
