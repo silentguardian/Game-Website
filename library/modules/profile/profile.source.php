@@ -18,11 +18,11 @@ function profile_main()
 	global $core, $template, $user;
 
 	$request = db_query("
-		SELECT email_address
+		SELECT id_unique, email_address
 		FROM user
 		WHERE id_user = $user[id]
 		LIMIT 1");
-	list ($template['email_address']) = db_fetch_row($request);
+	list ($template['id_unique'], $template['email_address']) = db_fetch_row($request);
 	db_free_result($request);
 
 	if (!empty($_POST['save']))
@@ -59,6 +59,18 @@ function profile_main()
 
 		if ($values['email_address'] === '')
 			fatal_error('You did not enter a valid email address!');
+
+		$request = db_query("
+			SELECT id_user
+			FROM user
+			WHERE email_address = '$values[email_address]'
+				AND id_user != '$user[id]'
+			LIMIT 1");
+		list ($duplicate_id) = db_fetch_row($request);
+		db_free_result($request);
+
+		if (!empty($duplicate_id))
+			fatal_error('The email address entered is already in use!');
 
 		$changes = array();
 		if ($values['email_address'] !== $template['email_address'])

@@ -43,7 +43,7 @@ function load_user()
 	if (!empty($user['id']))
 	{
 		$request = db_query("
-			SELECT id_user, username, password, admin
+			SELECT id_user, id_unique, username, password, admin
 			FROM user
 			WHERE id_user = $user[id]
 			LIMIT 1");
@@ -53,6 +53,7 @@ function load_user()
 
 			$temp = array(
 				'id' => (int) $row['id_user'],
+				'unique' => $row['id_unique'],
 				'username' => $row['username'],
 				'admin' => !empty($row['admin']),
 				'logged' => true,
@@ -68,6 +69,7 @@ function load_user()
 	{
 		$user = array(
 			'id' => 0,
+			'unique' => '',
 			'username' => '',
 			'admin' => false,
 			'logged' => false,
@@ -243,7 +245,7 @@ function template_menu()
 	{
 		echo '
 					<p class="navbar-text pull-right">
-						Logged in as <b>', $user['username'], '</b>
+						Logged in as <b>', $user['username'], '</b> (', $user['unique'], ')
 					</p>';
 	}
 

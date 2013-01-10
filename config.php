@@ -15,9 +15,10 @@ $core = array();
 $core['title'] = 'Game Website';
 $core['version'] = '1.0';
 $core['cookie'] = 'gw1998';
+$core['api_pass'] = '';
 $core['clean_url'] = false;
 
-$core['site_url'] = '';
+$core['site_url'] = 'http://localhost/game/';
 $core['site_dir'] = dirname(__FILE__);
 
 $core['root_dir'] = $core['site_dir'] . '/library';
@@ -26,7 +27,7 @@ $core['modules_dir'] = $core['root_dir'] . '/modules';
 
 $db = array();
 
-$db['server'] = '';
-$db['name'] = '';
-$db['user'] = '';
+$db['server'] = 'localhost';
+$db['name'] = 'game';
+$db['user'] = 'root';
 $db['password'] = '';

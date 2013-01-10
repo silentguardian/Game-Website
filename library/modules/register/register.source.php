@@ -40,8 +40,30 @@ function register_main()
 		if ($values['username'] === '')
 			fatal_error('You did not enter a valid username!');
 
+		$request = db_query("
+			SELECT id_user
+			FROM user
+			WHERE username = '$values[username]'
+			LIMIT 1");
+		list ($duplicate_id) = db_fetch_row($request);
+		db_free_result($request);
+
+		if (!empty($duplicate_id))
+			fatal_error('The username entered is already in use!');
+
 		if ($values['email_address'] === '')
 			fatal_error('You did not enter a valid email address!');
+
+		$request = db_query("
+			SELECT id_user
+			FROM user
+			WHERE email_address = '$values[email_address]'
+			LIMIT 1");
+		list ($duplicate_id) = db_fetch_row($request);
+		db_free_result($request);
+
+		if (!empty($duplicate_id))
+			fatal_error('The email address entered is already in use!');
 
 		if ($values['password'] === '')
 			fatal_error('You did not enter a valid password!');
@@ -49,11 +71,24 @@ function register_main()
 		if ($values['password'] !== $values['verify_password'])
 			fatal_error('The passwords entered do not match!');
 
+		$unique_id = substr(md5(session_id() . mt_rand() . (string) microtime()), 0, 10);
+
+		$request = db_query("
+			SELECT id_user
+			FROM user
+			WHERE id_unique = '$unique_id'
+			LIMIT 1");
+		list ($duplicate_id) = db_fetch_row($request);
+		db_free_result($request);
+
+		if (!empty($duplicate_id))
+			$unique_id = substr(md5(session_id() . mt_rand() . (string) microtime()), 0, 10);
+
 		db_query("
 			INSERT INTO user
-				(username, password, email_address, registered)
+				(id_unique, username, password, email_address, registered)
 			VALUES
-				('$values[username]', '$values[password]', '$values[email_address]', " . time() . ")");
+				('$unique_id', '$values[username]', '$values[password]', '$values[email_address]', " . time() . ")");
 
 		redirect(build_url('login'));
 	}
