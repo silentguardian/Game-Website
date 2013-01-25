@@ -256,9 +256,9 @@ function game_edit()
 	if (!empty($_POST['save']) || !empty($_POST['cancel']))
 	{
 		if (!empty($id_game) && $is_new)
-			redirect(build_url('game', 'customize', $id_game));
-		elseif (!empty($id_game)
-			redirect(build_url('game', 'view', $id_game));
+			redirect(build_url(array('game', 'customize', $id_game)));
+		elseif (!empty($id_game))
+			redirect(build_url(array('game', 'view', $id_game)));
 		else
 			redirect(build_url('game'));
 	}
