@@ -99,7 +99,7 @@ function template_game_view()
 			<dt>Description:</dt>
 			<dd>', nl2br($template['game']['description']), '</dd>
 			<dt>Creator:</dt>
-			<dd>', $template['game']['creator']['id'], '</dd>
+			<dd>', $template['game']['creator']['name'], '</dd>
 			<dt>Created:</dt>
 			<dd>', $template['game']['created'], '</dd>
 			<dt>Played:</dt>
