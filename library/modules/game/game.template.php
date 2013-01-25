@@ -18,10 +18,17 @@ function template_game_list()
 	global $template;
 
 	echo '
-		<div class="page-header">
+		<div class="page-header">';
+
+	if ($template['can_create'])
+	{
+		echo '
 			<div class="pull-right">
 				<a class="btn btn-warning" href="', build_url(array('game', 'edit')), '">Create Game</a>
-			</div>
+			</div>';
+	}
+
+	echo '
 			<h2>Game List</h2>
 		</div>
 		<table class="table table-striped table-bordered">
@@ -72,10 +79,17 @@ function template_game_view()
 		<div class="page-header">
 			<div class="pull-right">
 				<a class="btn" href="', build_url('game'), '">Back to List</a>
-				<a class="btn btn-success" href="', build_url(array('game', 'play', $template['game']['id'])), '">Play</a>
+				<a class="btn btn-success" href="', build_url(array('game', 'play', $template['game']['id'])), '">Play</a>';
+
+	if ($template['can_manage'])
+	{
+		echo '
 				<a class="btn btn-warning" href="', build_url(array('game', 'customize', $template['game']['id'])), '">Customize</a>
 				<a class="btn btn-primary" href="', build_url(array('game', 'edit', $template['game']['id'])), '">Edit</a>
-				<a class="btn btn-danger" href="', build_url(array('game', 'delete', $template['game']['id'])), '">Delete</a>
+				<a class="btn btn-danger" href="', build_url(array('game', 'delete', $template['game']['id'])), '">Delete</a>';
+	}
+
+	echo '
 			</div>
 			<h2>View Game - ', $template['game']['name'], '</h2>
 		</div>
@@ -85,7 +99,7 @@ function template_game_view()
 			<dt>Description:</dt>
 			<dd>', nl2br($template['game']['description']), '</dd>
 			<dt>Creator:</dt>
-			<dd>', $template['game']['creator'], '</dd>
+			<dd>', $template['game']['creator']['id'], '</dd>
 			<dt>Created:</dt>
 			<dd>', $template['game']['created'], '</dd>
 			<dt>Played:</dt>
@@ -106,13 +120,19 @@ function template_game_view()
 	{
 		foreach ($template['game']['comments'] as $comment)
 		{
-		echo '
+			echo '
 		<div class="well">
 			', $comment['body'], '
-			<hr />
+			<hr />';
+			if ($comment['can_delete'])
+			{
+				echo '
 			<div class="pull-right">
 				<a class="btn btn-danger" href="', build_url(array('game', 'comment', $template['game']['id'], $comment['id'])), '">Delete</a>
-			</div>
+			</div>';
+			}
+
+			echo '
 			<div class="muted">
 				Comment by ', $comment['user']['name'], ' on ', $comment['created'], '
 			</div>
@@ -120,7 +140,9 @@ function template_game_view()
 		}
 	}
 
-	echo '
+	if ($template['can_comment'])
+	{
+		echo '
 		<form class="form-horizontal" action="', build_url(array('game', 'comment', $template['game']['id'])), '" method="post">
 			<fieldset>
 				<div class="control-group">
@@ -134,6 +156,7 @@ function template_game_view()
 				</div>
 			</fieldset>
 		</form>';
+	}
 }
 
 function template_game_play()
