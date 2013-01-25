@@ -214,7 +214,19 @@ function template_game_customize()
 				<a class="btn" href="', build_url(array('game', 'view', $template['game']['id'])), '">Back to Game</a>
 			</div>
 			<h2>Customize Game - ', $template['game']['name'], '</h2>
-		</div>
+		</div>';
+
+	if ($template['empty_levels'])
+	{
+		echo '
+		<div class="alert alert-error">
+			<a class="close" data-dismiss="alert" href="#">×</a>
+			<h4 class="alert-heading">Warning!</h4>
+			You have not set any level codes for level(s) ', implode(', ', $template['empty_levels']), '. Unless you enter at least one level code for each level, users will not be able to play your game.
+		</div>';
+	}
+
+	echo '
 		<ul class="thumbnails">';
 
 	for ($level = 1; $level < 6; $level++)
@@ -225,7 +237,7 @@ function template_game_customize()
 					<img src="', $core['site_url'], 'interface/img/level.png" alt="">
 					<div class="detail">
 						<a class="btn btn-warning" href="', build_url(array('game', 'customize', $template['game']['id'], $level)), '">Customize Level</a>
-						<h3>Level ', $level, '</h3>
+						<h3>Level ', $level, (in_array($level, $template['empty_levels']) ? ' <span class="label label-important">no level code</span>' : ''), '</h3>
 					</p>
 				</div>
 			</li>';
@@ -254,7 +266,7 @@ function template_game_customize_level()
 				<div class="control-group">
 					<label class="control-label" for="code_', $item, '">Level code ', $item, ':</label>
 					<div class="controls">
-						<input type="text" class="input-xlarge" id="code_', $item, '" name="code[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item] . '"' : '' , ' />
+						<input type="text" class="input-xlarge" maxlength="10" id="code_', $item, '" name="code[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item] . '"' : '' , ' />
 					</div>
 				</div>';
 	}

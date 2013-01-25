@@ -287,6 +287,23 @@ function game_customize()
 	elseif (!$user['admin'] && $user['id'] != $id_user)
 		fatal_error('You are not allowed to carry out this action!');
 
+	$request = db_query("
+		SELECT id_level, id_item, value
+		FROM customize
+		WHERE id_game = $id_game
+			AND value != ''");
+	$items = array();
+	while ($row = db_fetch_assoc($request))
+		$items[$row['id_level']][$row['id_item']] = $row['value'];
+	db_free_result($request);
+
+	$template['empty_levels'] = array();
+	for ($level = 1; $level < 6; $level++)
+	{
+		if (empty($items[$level]))
+			$template['empty_levels'][] = $level;
+	}
+
 	if (!empty($id_level) && $id_level > 0 && $id_level < 6)
 	{
 		if (!empty($_POST['save']) && !empty($_POST['code']) && is_array($_POST['code']))
@@ -294,7 +311,7 @@ function game_customize()
 			$inserts = array();
 			for ($item = 1; $item < 11; $item++)
 			{
-				$value = !empty($_POST['code'][$item]) ? htmlspecialchars($_POST['code'][$item], ENT_QUOTES) : '';
+				$value = !empty($_POST['code'][$item]) ? htmlspecialchars(substr($_POST['code'][$item], 0, 10), ENT_QUOTES) : '';
 				if ($value !== '')
 					$inserts[] = "($id_game, $id_level, $item, '$value')";
 			}
