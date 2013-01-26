@@ -27,7 +27,7 @@ db_initiate();
 start_session();
 load_user();
 
-$modules = array('home', 'game', 'about');
+$modules = array('home', 'game', 'about', 'api');
 if ($user['logged'])
 	$modules = array_merge($modules, array('logout', 'profile'));
 else

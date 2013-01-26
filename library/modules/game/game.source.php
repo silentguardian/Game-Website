@@ -17,7 +17,7 @@ function game_main()
 {
 	global $core;
 
-	$actions = array('list', 'view', 'play', 'edit', 'customize', 'comment', 'delete', 'api');
+	$actions = array('list', 'view', 'play', 'edit', 'customize', 'comment', 'delete');
 
 	$core['current_action'] = 'list';
 	if (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], $actions))
@@ -463,37 +463,4 @@ function game_delete()
 		WHERE id_game = $id_game");
 
 	redirect(build_url('game'));
-}
-
-function game_api()
-{
-	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
-
-	$request = db_query("
-		SELECT id_game
-		FROM game
-		WHERE id_game = $id_game
-		LIMIT 1");
-	list ($id_game) = db_fetch_row($request);
-	db_free_result($request);
-
-	if (empty($id_game))
-		exit('no_game');
-
-	$request = db_query("
-		SELECT id_level, id_item, value
-		FROM customize
-		WHERE id_game = $id_game");
-	$items = array();
-	while ($row = db_fetch_assoc($request))
-		$items[$row['id_level']][$row['id_item']] = $row['value'];
-	db_free_result($request);
-
-	for ($level = 1; $level < 6; $level++)
-	{
-		for ($item = 1; $item < 11; $item++)
-			echo $level . '.' . $item . '=' . (isset($items[$level][$item]) ? $items[$level][$item] : '') . "\n";
-	}
-
-	exit();
 }
