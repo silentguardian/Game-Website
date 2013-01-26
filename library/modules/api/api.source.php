@@ -17,7 +17,7 @@ function api_main()
 {
 	global $core;
 
-	$actions = array('none', 'code');
+	$actions = array('none', 'code', 'set', 'get');
 
 	$core['current_action'] = 'none';
 	if (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], $actions))
@@ -33,8 +33,8 @@ function api_none()
 
 function api_code()
 {
-	$id_game = !empty($_REQUEST['api']) ? (int) $_REQUEST['api'] : 0;
-	$id_level = !empty($_REQUEST['code']) && $_REQUEST['code'] > 0 && $_REQUEST['code'] < 6 ? (int) $_REQUEST['code'] : 0;
+	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
+	$id_level = !empty($_REQUEST['level']) && $_REQUEST['level'] > 0 && $_REQUEST['level'] < 6 ? (int) $_REQUEST['level'] : 0;
 
 	$request = db_query("
 		SELECT id_game
@@ -68,4 +68,43 @@ function api_code()
 	}
 
 	exit(implode('&', $output));
+}
+
+function api_get()
+{
+	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
+	$id_user = !empty($_REQUEST['user']) ? (int) $_REQUEST['user'] : 0;
+
+	$request = db_query("
+		SELECT id_level
+		FROM progress
+		WHERE id_game = $id_game
+			AND id_user = $id_user
+		LIMIT 1");
+	list ($progress) = db_fetch_row($request);
+	db_free_result($request);
+
+	$output = 'progress=' . ($progress === null ? 'undefined' : (int) $progress);
+
+	exit($output);
+}
+
+function api_set()
+{
+	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
+	$id_user = !empty($_REQUEST['user']) ? (int) $_REQUEST['user'] : 0;
+	$id_level = !empty($_REQUEST['level']) && $_REQUEST['level'] > 0 && $_REQUEST['level'] < 6 ? (int) $_REQUEST['level'] : 0;
+
+	if ($id_game === 0 || $id_user === 0 || $id_level === 0)
+		exit('result=missingdata');
+
+	db_query("
+		REPLACE INTO progress
+			(id_game, id_user, id_level)
+		VALUES
+			($id_game, $id_user, $id_level)");
+
+	$output = 'result=success';
+
+	exit($output);
 }
