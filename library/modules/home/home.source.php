@@ -50,17 +50,17 @@ function home_main()
 	db_free_result($request);
 
 	$request = db_query("
-		SELECT u.username, s.value
-		FROM score AS s
-			INNER JOIN user AS u ON (u.id_user = s.id_user)
-		ORDER BY value DESC
+		SELECT u.username, p.id_level
+		FROM progress AS p
+			INNER JOIN user AS u ON (u.id_user = p.id_user)
+		ORDER BY p.id_level DESC
 		LIMIT 5");
 	$template['top_players'] = array();
 	while ($row = db_fetch_assoc($request))
 	{
 		$template['top_players'][] = array(
 			'username' => $row['username'],
-			'score' => $row['value'],
+			'progress' => $row['id_level'],
 		);
 	}
 	db_free_result($request);

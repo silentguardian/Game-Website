@@ -105,7 +105,7 @@ function template_home_main()
 				<thead>
 					<tr>
 						<th>Player</th>
-						<th class="span2">Score</th>
+						<th class="span2">Progress</th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -123,7 +123,7 @@ function template_home_main()
 		echo '
 					<tr>
 						<td>', $player['username'], '</td>
-						<td>', $player['score'], '</td>
+						<td>Level ', $player['progress'], '</td>
 					</tr>';
 	}
 
