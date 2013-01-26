@@ -245,7 +245,7 @@ function template_menu()
 	{
 		echo '
 					<p class="navbar-text pull-right">
-						Logged in as <b>', $user['username'], '</b> (', $user['unique'], ')
+						Logged in as <b>', $user['username'], '</b>
 					</p>';
 	}
 

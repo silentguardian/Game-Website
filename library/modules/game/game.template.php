@@ -171,7 +171,7 @@ function template_game_play()
 			<h2>Play Game - ', $template['game']['name'], '</h2>
 		</div>
 		<div class="align_center">
-			<embed src="', $core['site_url'], 'media/movie.swf" flashvars="unique_id=', $user['unique'], '&game_id=', $template['game']['id'], '" width="800" height="600"></embed>
+			<embed src="', $core['site_url'], 'media/movie.swf" flashvars="id_user=', $user['id'], '&id_game=', $template['game']['id'], '" width="800" height="600"></embed>
 		</div>';
 }
 
