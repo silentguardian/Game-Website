@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.5
+-- version 3.2.4
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Jan 10, 2013 at 06:36 PM
--- Server version: 5.5.16
--- PHP Version: 5.3.8
+-- Host: localhost
+-- Generation Time: Jan 26, 2013 at 12:27 AM
+-- Server version: 5.1.44
+-- PHP Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -70,16 +69,15 @@ CREATE TABLE IF NOT EXISTS `game` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `score`
+-- Table structure for table `progress`
 --
 
-CREATE TABLE IF NOT EXISTS `score` (
-  `id_score` int(10) NOT NULL AUTO_INCREMENT,
-  `id_game` mediumint(8) NOT NULL DEFAULT '0',
+CREATE TABLE IF NOT EXISTS `progress` (
+  `id_progress` mediumint(8) NOT NULL AUTO_INCREMENT,
   `id_user` mediumint(8) NOT NULL DEFAULT '0',
-  `time` int(10) NOT NULL DEFAULT '0',
-  `value` smallint(5) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_score`)
+  `id_game` mediumint(8) NOT NULL DEFAULT '0',
+  `id_level` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_progress`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -98,7 +96,3 @@ CREATE TABLE IF NOT EXISTS `user` (
   `admin` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_user`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
