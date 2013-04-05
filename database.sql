@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 26, 2013 at 12:27 AM
+-- Generation Time: Apr 05, 2013 at 01:30 PM
 -- Server version: 5.1.44
 -- PHP Version: 5.3.1
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `game`
+-- Database: `new`
 --
 
 -- --------------------------------------------------------
@@ -31,8 +31,10 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `id_user` mediumint(8) NOT NULL DEFAULT '0',
   `body` text COLLATE utf8_unicode_ci NOT NULL,
   `created` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_comment`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id_comment`),
+  KEY `id_game` (`id_game`),
+  KEY `created` (`created`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -46,8 +48,9 @@ CREATE TABLE IF NOT EXISTS `customize` (
   `id_level` tinyint(4) NOT NULL DEFAULT '0',
   `id_item` tinyint(4) NOT NULL DEFAULT '0',
   `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id_customize`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id_customize`),
+  UNIQUE KEY `id_game` (`id_game`,`id_level`,`id_item`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -63,8 +66,22 @@ CREATE TABLE IF NOT EXISTS `game` (
   `created` int(10) NOT NULL DEFAULT '0',
   `played` int(10) NOT NULL DEFAULT '0',
   `comments` mediumint(8) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_game`)
+  PRIMARY KEY (`id_game`),
+  KEY `played` (`played`),
+  KEY `created` (`created`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE IF NOT EXISTS `inventory` (
+  `id_user` mediumint(8) NOT NULL DEFAULT '0',
+  `id_item` mediumint(8) NOT NULL DEFAULT '0',
+  UNIQUE KEY `id_user` (`id_user`,`id_item`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -77,8 +94,26 @@ CREATE TABLE IF NOT EXISTS `progress` (
   `id_user` mediumint(8) NOT NULL DEFAULT '0',
   `id_game` mediumint(8) NOT NULL DEFAULT '0',
   `id_level` tinyint(4) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_progress`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id_progress`),
+  UNIQUE KEY `id_user` (`id_user`,`id_game`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shop`
+--
+
+CREATE TABLE IF NOT EXISTS `shop` (
+  `id_item` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `id_category` tinyint(4) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `cost` smallint(8) NOT NULL DEFAULT '0',
+  `bought` smallint(8) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_item`),
+  KEY `id_category` (`id_category`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -93,6 +128,13 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email_address` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `registered` int(10) NOT NULL DEFAULT '0',
+  `coins` int(10) NOT NULL DEFAULT '0',
+  `points` int(10) NOT NULL DEFAULT '0',
+  `hat` mediumint(8) NOT NULL DEFAULT '0',
+  `charac` mediumint(8) NOT NULL DEFAULT '0',
+  `screw` mediumint(8) NOT NULL DEFAULT '0',
   `admin` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_user`)
+  PRIMARY KEY (`id_user`),
+  KEY `registered` (`registered`),
+  KEY `points` (`points`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

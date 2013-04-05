@@ -29,7 +29,7 @@ load_user();
 
 $modules = array('home', 'game', 'about', 'api');
 if ($user['logged'])
-	$modules = array_merge($modules, array('logout', 'profile'));
+	$modules = array_merge($modules, array('logout', 'profile', 'shop'));
 else
 	$modules = array_merge($modules, array('login', 'register'));
 

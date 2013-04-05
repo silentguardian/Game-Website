@@ -298,13 +298,13 @@ function game_customize()
 	db_free_result($request);
 
 	$template['empty_levels'] = array();
-	for ($level = 1; $level < 6; $level++)
+	for ($level = 1; $level < 7; $level++)
 	{
 		if (empty($items[$level]))
 			$template['empty_levels'][] = $level;
 	}
 
-	if (!empty($id_level) && $id_level > 0 && $id_level < 6)
+	if (!empty($id_level) && $id_level > 0 && $id_level < 7)
 	{
 		if (!empty($_POST['save']) && !empty($_POST['code']) && is_array($_POST['code']))
 		{
@@ -459,7 +459,7 @@ function game_delete()
 		WHERE id_game = $id_game");
 
 	db_query("
-		DELETE FROM score
+		DELETE FROM progress
 		WHERE id_game = $id_game");
 
 	redirect(build_url('game'));

@@ -34,7 +34,7 @@ function api_none()
 function api_code()
 {
 	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
-	$id_level = !empty($_REQUEST['level']) && $_REQUEST['level'] > 0 && $_REQUEST['level'] < 6 ? (int) $_REQUEST['level'] : 0;
+	$id_level = !empty($_REQUEST['level']) && $_REQUEST['level'] > 0 && $_REQUEST['level'] < 7 ? (int) $_REQUEST['level'] : 0;
 
 	$request = db_query("
 		SELECT id_game
@@ -61,7 +61,7 @@ function api_code()
 		exit('error=nocode');
 
 	$output = array();
-	for ($level = 1; $level < 6; $level++)
+	for ($level = 1; $level < 7; $level++)
 	{
 		for ($item = 1; $item < 11; $item++)
 			$output[] = 'c' . $item . '=' . (isset($items[$item]) ? urlencode($items[$item]) : '');

@@ -229,7 +229,7 @@ function template_game_customize()
 	echo '
 		<ul class="thumbnails">';
 
-	for ($level = 1; $level < 6; $level++)
+	for ($level = 1; $level < 7; $level++)
 	{
 		echo '
 			<li class="span4">

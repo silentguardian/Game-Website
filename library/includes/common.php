@@ -43,7 +43,9 @@ function load_user()
 	if (!empty($user['id']))
 	{
 		$request = db_query("
-			SELECT id_user, id_unique, username, password, admin
+			SELECT
+				id_user, id_unique, username, password, admin,
+				coins, points, hat, charac, screw
 			FROM user
 			WHERE id_user = $user[id]
 			LIMIT 1");
@@ -57,6 +59,11 @@ function load_user()
 				'username' => $row['username'],
 				'admin' => !empty($row['admin']),
 				'logged' => true,
+				'coins' => $row['coins'],
+				'points' => $row['points'],
+				'hat' => $row['hat'],
+				'character' => $row['charac'],
+				'screw' => $row['screw'],
 			);
 		}
 		db_free_result($request);
@@ -204,6 +211,7 @@ function template_menu()
 		'',
 		'home' => 'Home',
 		'game' => 'Games',
+		'shop' => 'Shop',
 		'login' => 'Login',
 		'register' => 'Register',
 		'about' => 'About',
