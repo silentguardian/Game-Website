@@ -17,7 +17,7 @@ function api_main()
 {
 	global $core;
 
-	$actions = array('none', 'code', 'set', 'get');
+	$actions = array('none', 'code', 'set', 'get', 'point');
 
 	$core['current_action'] = 'none';
 	if (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], $actions))
@@ -103,6 +103,25 @@ function api_set()
 			(id_game, id_user, id_level)
 		VALUES
 			($id_game, $id_user, $id_level)");
+
+	$output = 'result=success';
+
+	exit($output);
+}
+
+function api_point()
+{
+	$id_user = !empty($_REQUEST['user']) ? (int) $_REQUEST['user'] : 0;
+	$points = !empty($_REQUEST['points']) ? (int) $_REQUEST['points'] : 0;
+
+	if ($id_user === 0 || $points === 0)
+		exit('result=missingdata');
+
+	db_query("
+		UPDATE user
+		SET points = points + $points
+		WHERE id_user = $id_user
+		LIMIT 1");
 
 	$output = 'result=success';
 
