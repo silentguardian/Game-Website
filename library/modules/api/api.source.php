@@ -119,7 +119,9 @@ function api_point()
 
 	db_query("
 		UPDATE user
-		SET points = points + $points
+		SET
+			points = points + $points,
+			coins = coins + $points
 		WHERE id_user = $id_user
 		LIMIT 1");
 
