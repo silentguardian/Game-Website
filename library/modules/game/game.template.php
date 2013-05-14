@@ -171,7 +171,7 @@ function template_game_play()
 			<h2>Play Game - ', $template['game']['name'], '</h2>
 		</div>
 		<div class="align_center">
-			<embed src="', $core['site_url'], 'media/movie.swf" flashvars="id_user=', $user['id'], '&id_game=', $template['game']['id'], '&id_hat=', $user['hat'], '&id_character=', $user['character'], '&id_screw=', $user['screw'], '" width="800" height="600"></embed>
+			<embed src="', $core['site_url'], 'media/movie.swf" flashvars="id_user=', $user['id'], '&id_game=', $template['game']['id'], '&id_hat=', $template['game']['hat'], '&id_character=', $template['game']['character'], '&id_screw=', $template['game']['screw'], '" width="800" height="600"></embed>
 		</div>';
 }
 
@@ -267,6 +267,10 @@ function template_game_customize_level()
 					<label class="control-label" for="code_', $item, '">Level code ', $item, ':</label>
 					<div class="controls">
 						<input type="text" class="input-xlarge" maxlength="10" id="code_', $item, '" name="code[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item] . '"' : '' , ' />
+					</div>
+					<label class="control-label" for="hint_', $item, '">Code hint ', $item, ':</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="hint_', $item, '" name="hint[', $item, ']"', isset($template['items'][$item]) ? ' value="' . $template['items'][$item]['hint'] . '"' : '' , ' />
 					</div>
 				</div>';
 	}

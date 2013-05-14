@@ -121,6 +121,12 @@ function template_shop_edit()
 			  		</div>
 				</div>
 				<div class="control-group">
+					<label class="control-label" for="namespace">Namespace:</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="namespace" name="namespace" value="', $template['item']['namespace'], '" />
+					</div>
+				</div>
+				<div class="control-group">
 					<label class="control-label" for="name">Cost:</label>
 					<div class="controls">
 						<input type="text" class="input-large" id="cost" name="cost" value="', $template['item']['cost'], '" />

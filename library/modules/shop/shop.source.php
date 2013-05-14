@@ -91,13 +91,14 @@ function shop_edit()
 			'id_category' => 0,
 			'name' => '',
 			'description' => '',
+			'namespace' => '',
 			'cost' => 0,
 		);
 	}
 	else
 	{
 		$request = db_query("
-			SELECT id_item, id_category, name, description, cost
+			SELECT id_item, id_category, name, description, namespace, cost
 			FROM shop
 			WHERE id_item = $id_item
 			LIMIT 1");
@@ -109,6 +110,7 @@ function shop_edit()
 				'id_category' => $row['id_category'],
 				'name' => $row['name'],
 				'description' => $row['description'],
+				'namespace' => $row['namespace'],
 				'cost' => $row['cost'],
 			);
 		}
@@ -126,6 +128,7 @@ function shop_edit()
 		$fields = array(
 			'name' => 'string',
 			'description' => 'string',
+			'namespace' => 'string',
 			'id_category' => 'integer',
 			'cost' => 'integer',
 		);
@@ -140,6 +143,24 @@ function shop_edit()
 
 		if ($values['name'] === '')
 			fatal_error('Name field cannot be empty!');
+
+		if ($values['namespace'] === '')
+			fatal_error('Namespace field cannot be empty!');
+
+		if (preg_replace('~[A-Za-z0-9_]~', '', $values['namespace']) !== '')
+			fatal_error('Namespace can only include alphanumeric characters and underscores.');
+
+		$request = db_query("
+			SELECT id_item
+			FROM shop
+			WHERE namespace = '$values[namespace]'
+				AND id_item != $id_item
+			LIMIT 1");
+		list ($duplicate_id) = db_fetch_row($request);
+		db_free_result($request);
+
+		if (!empty($duplicate_id))
+			fatal_error('The namespace entered is already in use!');
 
 		if ($is_new)
 		{

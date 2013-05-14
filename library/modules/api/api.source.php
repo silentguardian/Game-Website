@@ -17,6 +17,9 @@ function api_main()
 {
 	global $core;
 
+	if (!empty($core['api_pass']) && (empty($_REQUEST['pass']) || $core['api_pass'] !== $_REQUEST['pass']))
+		exit('Invalid API pass!');
+
 	$actions = array('none', 'code', 'set', 'get', 'point');
 
 	$core['current_action'] = 'none';
@@ -48,7 +51,7 @@ function api_code()
 		exit('error=nogame');
 
 	$request = db_query("
-		SELECT id_item, value
+		SELECT id_item, value, hint
 		FROM customize
 		WHERE id_game = $id_game
 			AND id_level = $id_level");
@@ -61,10 +64,10 @@ function api_code()
 		exit('error=nocode');
 
 	$output = array();
-	for ($level = 1; $level < 7; $level++)
+	for ($item = 1; $item < 11; $item++)
 	{
-		for ($item = 1; $item < 11; $item++)
-			$output[] = 'c' . $item . '=' . (isset($items[$item]) ? urlencode($items[$item]) : '');
+		$output[] = 'c' . $item . '=' . (isset($items[$item]['code']) ? urlencode($items[$item]['code']) : '');
+		$output[] = 'h' . $item . '=' . (isset($items[$item]['hint']) ? urlencode($items[$item]['hint']) : '');
 	}
 
 	exit(implode('&', $output));

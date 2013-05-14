@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `new`
+-- Database: `database`
 --
 
 -- --------------------------------------------------------
@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `customize` (
   `id_level` tinyint(4) NOT NULL DEFAULT '0',
   `id_item` tinyint(4) NOT NULL DEFAULT '0',
   `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `hint` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id_customize`),
   UNIQUE KEY `id_game` (`id_game`,`id_level`,`id_item`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -109,6 +110,7 @@ CREATE TABLE IF NOT EXISTS `shop` (
   `id_category` tinyint(4) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `namespace` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `cost` smallint(8) NOT NULL DEFAULT '0',
   `bought` smallint(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_item`),

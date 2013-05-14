@@ -1,8 +1,8 @@
 RewriteEngine on
-RewriteRule ^api/code/([0-9]+)/([0-9]+)/?$ ?module=api&action=code&game=$1&level=$2
-RewriteRule ^api/get/([0-9]+)/([0-9]+)/?$ ?module=api&action=get&game=$1&user=$2
-RewriteRule ^api/set/([0-9]+)/([0-9]+)/([0-9]+)/?$ ?module=api&action=set&game=$1&user=$2&level=$3
-RewriteRule ^api/point/([0-9]+)/([0-9]+)/?$ ?module=api&action=point&user=$1&points=$2
+RewriteRule ^api/code/([0-9]+)/([0-9]+)/([A-Za-z0-9]+)/?$ ?module=api&action=code&game=$1&level=$2&pass=$3
+RewriteRule ^api/get/([0-9]+)/([0-9]+)/([A-Za-z0-9]+)/?$ ?module=api&action=get&game=$1&user=$2&pass=$3
+RewriteRule ^api/set/([0-9]+)/([0-9]+)/([0-9]+)/([A-Za-z0-9]+)/?$ ?module=api&action=set&game=$1&user=$2&level=$3&pass=$4
+RewriteRule ^api/point/([0-9]+)/([0-9]+)/([A-Za-z0-9]+)/?$ ?module=api&action=point&user=$1&points=$2&pass=$3
 RewriteRule ^([a-z]+)/?$ ?module=$1
 RewriteRule ^([a-z]+)/([a-z]+)/?$ ?module=$1&action=$2
 RewriteRule ^([a-z]+)/([a-z]+)/([0-9]+)/?$ ?module=$1&action=$2&$1=$3

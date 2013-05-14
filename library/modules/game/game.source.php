@@ -125,7 +125,7 @@ function game_view()
 
 function game_play()
 {
-	global $core, $template;
+	global $core, $template, $user;
 
 	$id_game = !empty($_REQUEST['game']) ? (int) $_REQUEST['game'] : 0;
 
@@ -155,6 +155,22 @@ function game_play()
 			WHERE id_game = $id_game");
 
 		$_SESSION['last_played_game'] = $template['game']['id'];
+	}
+
+	$template['game'] = array_merge($template['game'], array('hat' => '', 'character' => '', 'screw' => ''));
+
+	if (!empty($user['hat']) || !empty($user['character']) || !empty($user['screw']))
+	{
+		$categories = array('hat', 'character', 'screw');
+
+		$request = db_query("
+			SELECT id_category, namespace
+			FROM shop
+			WHERE id_item IN ($user[hat], $user[character], $user[screw])
+			LIMIT 3");
+		while ($row = db_fetch_assoc($request))
+			$template['game'][$categories[$row['id_category']]] = $row['namespace'];
+		db_free_result($request);
 	}
 
 	$template['page_title'] = 'Play Game - ' . $template['game']['name'];
@@ -312,8 +328,9 @@ function game_customize()
 			for ($item = 1; $item < 11; $item++)
 			{
 				$value = !empty($_POST['code'][$item]) ? htmlspecialchars(substr($_POST['code'][$item], 0, 10), ENT_QUOTES) : '';
+				$hint = !empty($_POST['hint'][$item]) ? htmlspecialchars($_POST['hint'][$item], ENT_QUOTES) : '';
 				if ($value !== '')
-					$inserts[] = "($id_game, $id_level, $item, '$value')";
+					$inserts[] = "($id_game, $id_level, $item, '$value', '$hint')";
 			}
 
 			db_query("
@@ -323,7 +340,7 @@ function game_customize()
 
 			db_query("
 				INSERT INTO customize
-					(id_game, id_level, id_item, value)
+					(id_game, id_level, id_item, value, hint)
 				VALUES
 					" . implode(",
 					", $inserts));
@@ -333,12 +350,17 @@ function game_customize()
 			redirect(build_url(array('game', 'customize', $id_game)));
 
 		$request = db_query("
-			SELECT id_item, value
+			SELECT id_item, value, hint
 			FROM customize
 			WHERE id_game = $id_game
 				AND id_level = $id_level");
 		while ($row = db_fetch_assoc($request))
-			$template['items'][$row['id_item']] = $row['value'];
+		{
+			$template['items'][$row['id_item']] = array(
+				'code' => $row['value'],
+				'hint' => $row['hint'],
+			);
+		}
 		db_free_result($request);
 
 		$template['page_title'] = 'Customize Game - ' . $name . ' - Level ' . $id_level;
